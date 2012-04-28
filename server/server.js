@@ -6,7 +6,7 @@
 
   Blob = require('./game.js').Blob;
 
-  io = require('socket.io').listen(8080);
+  io = require('socket.io').listen(46612);
 
   game = new Game();
 
