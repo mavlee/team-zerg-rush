@@ -1,9 +1,10 @@
 class Game
   # constants
   @BOARD_SIZE: 960 # square board
-  @STARTING_BASE_LIFE: 100
+  @STARTING_BASE_LIFE: 10
   @BASE_SIZE: 50
   @GAME_RESTART_TIME: 5000
+  @SPAWN_INTERVAL: 1000
   @UPDATE_INTERVAL: Math.round(1000/30)
 
   # game variables
@@ -15,24 +16,32 @@ class Game
 
   constructor: () ->
     this.blob_list = []
-    this.base_life: Game.STARTING_BASE_LIFE
+    this.base_life = Game.STARTING_BASE_LIFE
 
   start_game: () ->
-    this.base_life: Game.STARTING_BASE_LIFE
-    this.enemies_killed: 0
+    this.base_life = Game.STARTING_BASE_LIFE
+    this.enemies_killed = 0
+    this.game_on = true
+    console.log('game started')
 
   save: () ->
     data =
       blob_list: this.blob_list
     return data
 
+  # Calibrated for SPAWN_INTERVAL
   spawn_enemies: () ->
-    this.blob_list.append(new Blob(30, 480, 0, 0, 10, 2))
-    this.blob_list.append(new Blob(30, 0, 480, 5, 0, 1))
-    this.blob_list.append(new Blob(30, 480, 960, 0, -10, 3))
-    this.blob_list.append(new Blob(30, 960, 480, -5, 0, 4))
+    if this.game_on != true
+      return
+    this.blob_list.push(new Blob(30, 480, 0, 0, 100, 2))
+    this.blob_list.push(new Blob(30, 0, 480, 50, 0, 1))
+    this.blob_list.push(new Blob(30, 480, 960, 0, -100, 3))
+    this.blob_list.push(new Blob(30, 960, 480, -50, 0, 4))
+    console.log('enemies spawned')
 
   compute_state: () ->
+    if this.game_on != true
+      return
     for blob in this.blob_list
       # Update positions
       blob.updatePosition(Game.UPDATE_INTERVAL)
@@ -41,6 +50,17 @@ class Game
         blob.life = 0
         this.base_life--
     this.blob_list = (x for x in this.blob_list when x.life > 0)
+    if this.base_life == 0
+      this.game_over()
+
+  game_over: () ->
+    console.log('game_over')
+    this.blob_list = []
+    this.game_on = false
+    ctx = this
+    setTimeout(() ->
+      ctx.start_game()
+    , Game.GAME_RESTART_TIME)
       
 
 # Enemies - square blob
@@ -79,3 +99,6 @@ class Blob
         return true
 
     return false
+
+exports.Blob = Blob
+exports.Game = Game
