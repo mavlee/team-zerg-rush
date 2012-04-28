@@ -33,10 +33,39 @@ class Game
   spawn_enemies: () ->
     if this.game_on != true
       return
-    this.blob_list.push(new Blob(30, 480, 0, 0, 100, 2))
-    this.blob_list.push(new Blob(30, 0, 480, 50, 0, 1))
-    this.blob_list.push(new Blob(30, 480, 960, 0, -100, 3))
-    this.blob_list.push(new Blob(30, 960, 480, -50, 0, 4))
+    # Create 4 blobs for every player
+    for blob_no in [1..this.player_count * 4]
+      # sizes from 10 to 50px
+      size = Math.floor(Math.random() * (50 - 10 + 1)) + 10
+      # life is from 1 to 2 x players, to a max of 10 
+      life = Math.floor(Math.random() * (Math.min(this.player_count*2, 10))) + 1
+      speed = Math.floor(Math.random() * (Math.min(this.player_count*40, 200) - 40 + 1)) + 40
+      side = Math.floor(Math.random() * 4) + 1
+      pos = Math.floor(Math.random() * 960) + 1
+      # top
+      if side == 1
+        y = 0 - size
+        x = pos
+      # bottom
+      else if side == 2
+        y = 960
+        x = pos
+      # left
+      else if side == 3
+        y = pos
+        x = 0 - size
+      # right
+      else if side == 4
+        y = pos
+        x = 960
+
+      vx = speed
+      vy = Math.min(200, 1.0 * speed * (y - 480) / (x - 480))
+      if x > 480 and y > 480
+        vx *= -1
+        vy *= -1
+
+      this.blob_list.push(new Blob(size, x, y, vx, vy, life))
     console.log('enemies spawned')
 
   compute_state: () ->

@@ -49,13 +49,37 @@
     };
 
     Game.prototype.spawn_enemies = function() {
+      var blob_no, life, pos, side, size, speed, vx, vy, x, y, _i, _ref;
       if (this.game_on !== true) {
         return;
       }
-      this.blob_list.push(new Blob(30, 480, 0, 0, 100, 2));
-      this.blob_list.push(new Blob(30, 0, 480, 50, 0, 1));
-      this.blob_list.push(new Blob(30, 480, 960, 0, -100, 3));
-      this.blob_list.push(new Blob(30, 960, 480, -50, 0, 4));
+      for (blob_no = _i = 1, _ref = this.player_count * 4; 1 <= _ref ? _i <= _ref : _i >= _ref; blob_no = 1 <= _ref ? ++_i : --_i) {
+        size = Math.floor(Math.random() * (50 - 10 + 1)) + 10;
+        life = Math.floor(Math.random() * (Math.min(this.player_count * 2, 10))) + 1;
+        speed = Math.floor(Math.random() * (Math.min(this.player_count * 40, 200) - 40 + 1)) + 40;
+        side = Math.floor(Math.random() * 4) + 1;
+        pos = Math.floor(Math.random() * 960) + 1;
+        if (side === 1) {
+          y = 0 - size;
+          x = pos;
+        } else if (side === 2) {
+          y = 960;
+          x = pos;
+        } else if (side === 3) {
+          y = pos;
+          x = 0 - size;
+        } else if (side === 4) {
+          y = pos;
+          x = 960;
+        }
+        vx = speed;
+        vy = Math.min(200, 1.0 * speed * (y - 480) / (x - 480));
+        if (x > 480 && y > 480) {
+          vx *= -1;
+          vy *= -1;
+        }
+        this.blob_list.push(new Blob(size, x, y, vx, vy, life));
+      }
       return console.log('enemies spawned');
     };
 
