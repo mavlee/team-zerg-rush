@@ -53,7 +53,7 @@
       if (this.game_on !== true) {
         return;
       }
-      for (blob_no = _i = 1, _ref = this.player_count * 4; 1 <= _ref ? _i <= _ref : _i >= _ref; blob_no = 1 <= _ref ? ++_i : --_i) {
+      for (blob_no = _i = 1, _ref = this.player_count * 2; 1 <= _ref ? _i <= _ref : _i >= _ref; blob_no = 1 <= _ref ? ++_i : --_i) {
         size = Math.floor(Math.random() * (50 - 10 + 1)) + 10;
         life = Math.floor(Math.random() * (Math.min(this.player_count * 2, 10))) + 1;
         speed = Math.floor(Math.random() * (Math.min(this.player_count * 40, 200) - 40 + 1)) + 40;

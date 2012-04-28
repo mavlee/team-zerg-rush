@@ -1,6 +1,7 @@
 Game = require('./game.js').Game
 Blob = require('./game.js').Blob
-io = require('socket.io').listen(process.env.PORT || 3000)
+io = require('socket.io').listen(process.env.PORT || 8080)
+
 # assuming io is the Socket.IO server object
 io.configure(() ->
     io.set("transports", ["xhr-polling"])

@@ -33,8 +33,8 @@ class Game
   spawn_enemies: () ->
     if this.game_on != true
       return
-    # Create 4 blobs for every player
-    for blob_no in [1..this.player_count * 4]
+    # Create 2 blobs for every player
+    for blob_no in [1..this.player_count * 2]
       # sizes from 10 to 50px
       size = Math.floor(Math.random() * (50 - 10 + 1)) + 10
       # life is from 1 to 2 x players, to a max of 10 

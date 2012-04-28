@@ -2,7 +2,7 @@
 (function() {
   var canvas, colors, draw, draw_game_over, socket;
 
-  socket = io.connect('http://blooming-stream-4391.herokuapp.com:46612');
+  socket = io.connect('http://localhost:8080');
 
   canvas = document.getElementById('canvas').getContext('2d');
 

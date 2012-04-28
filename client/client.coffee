@@ -1,4 +1,5 @@
-socket = io.connect('http://blooming-stream-4391.herokuapp.com:46612')
+#socket = io.connect('http://blooming-stream-4391.herokuapp.com:46612')
+socket = io.connect('http://localhost:8080')
 canvas = document.getElementById('canvas').getContext('2d')
 
 colors = ['', '#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '0000FF', '#6600FF', '#8B00FF', '#330066', '#333333', '#000000']
