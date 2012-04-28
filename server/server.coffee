@@ -3,10 +3,10 @@ Blob = require('./game.js').Blob
 io = require('socket.io').listen(process.env.PORT || 8080)
 
 # assuming io is the Socket.IO server object
-io.configure(() ->
-    io.set("transports", ["xhr-polling"])
-    io.set("polling duration", 10)
-)
+#io.configure(() ->
+#    io.set("transports", ["xhr-polling"])
+#    io.set("polling duration", 10)
+#)
 
 game = new Game()
 game.start_game()
@@ -33,5 +33,10 @@ io.sockets.on('connection', (socket) ->
   socket.on('disconnect', (socket) ->
     game.player_leave()
     console.log('player left')
+  )
+
+  socket.on('player click', (data) ->
+    console.log(data)
+    game.register_click(data['x'], data['y'])
   )
 )

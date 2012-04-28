@@ -73,7 +73,11 @@
           x = 960;
         }
         vx = speed;
-        vy = Math.min(200, 1.0 * speed * (y - 480) / (x - 480));
+        vy = 1.0 * speed * (y - 480) / (x - 480);
+        if (vy > Math.min(this.player_count * 40, 200)) {
+          vy = speed;
+          vx = 1.0 * speed * (x - 480) / (y - 480);
+        }
         if (x > 480 && y > 480) {
           vx *= -1;
           vy *= -1;
@@ -81,6 +85,20 @@
         this.blob_list.push(new Blob(size, x, y, vx, vy, life));
       }
       return console.log('enemies spawned');
+    };
+
+    Game.prototype.register_click = function(x, y) {
+      var blob, _i, _len, _ref;
+      _ref = this.blob_list;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        blob = _ref[_i];
+        if (blob.x < x && blob.x + blob.size > x && blob.y < y && blob.y + blob.size > y) {
+          if (blob.life > 0) {
+            blob.life--;
+            return;
+          }
+        }
+      }
     };
 
     Game.prototype.compute_state = function() {

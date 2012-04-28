@@ -1,6 +1,8 @@
 #socket = io.connect('http://blooming-stream-4391.herokuapp.com:46612')
 socket = io.connect('http://localhost:8080')
+canvasDom = document.getElementById('canvas')
 canvas = document.getElementById('canvas').getContext('2d')
+window.canvasDom = canvasDom
 
 colors = ['', '#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '0000FF', '#6600FF', '#8B00FF', '#330066', '#333333', '#000000']
 
@@ -26,3 +28,8 @@ draw_game_over = () ->
   canvas.font = "18pt Arial"
   canvas.clearRect(0, 0, 960, 960)
   canvas.fillText("GAME OVER", 430, 460)
+
+canvasDom.onclick = (e) ->
+  x = e.pageX - canvasDom.offsetLeft
+  y = e.pageY - canvasDom.offsetTop
+  socket.emit('player click', {'x': x, 'y': y})

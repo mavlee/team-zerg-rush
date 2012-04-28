@@ -60,13 +60,23 @@ class Game
         x = 960
 
       vx = speed
-      vy = Math.min(200, 1.0 * speed * (y - 480) / (x - 480))
+      vy = 1.0 * speed * (y - 480) / (x - 480)
+      if vy > Math.min(this.player_count*40, 200)
+        vy = speed
+        vx = 1.0 * speed * (x - 480) / (y - 480)
       if x > 480 and y > 480
         vx *= -1
         vy *= -1
 
       this.blob_list.push(new Blob(size, x, y, vx, vy, life))
     console.log('enemies spawned')
+
+  register_click: (x, y) ->
+    for blob in this.blob_list
+      if blob.x < x and blob.x + blob.size > x and blob.y < y and blob.y + blob.size > y
+        if blob.life > 0
+          blob.life--
+          return
 
   compute_state: () ->
     if this.game_on != true

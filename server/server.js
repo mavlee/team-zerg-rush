@@ -8,11 +8,6 @@
 
   io = require('socket.io').listen(process.env.PORT || 8080);
 
-  io.configure(function() {
-    io.set("transports", ["xhr-polling"]);
-    return io.set("polling duration", 10);
-  });
-
   game = new Game();
 
   game.start_game();
@@ -35,9 +30,13 @@
         return socket.emit('game data', game.save());
       }
     }, Game.UPDATE_INTERVAL);
-    return socket.on('disconnect', function(socket) {
+    socket.on('disconnect', function(socket) {
       game.player_leave();
       return console.log('player left');
+    });
+    return socket.on('player click', function(data) {
+      console.log(data);
+      return game.register_click(data['x'], data['y']);
     });
   });
 
