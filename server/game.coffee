@@ -61,7 +61,12 @@ class Game
     setTimeout(() ->
       ctx.start_game()
     , Game.GAME_RESTART_TIME)
-      
+
+  player_join: () ->
+    this.player_count++
+
+  player_leave: () ->
+    this.player_count--
 
 # Enemies - square blob
 class Blob

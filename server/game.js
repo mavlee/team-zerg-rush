@@ -101,6 +101,14 @@
       }, Game.GAME_RESTART_TIME);
     };
 
+    Game.prototype.player_join = function() {
+      return this.player_count++;
+    };
+
+    Game.prototype.player_leave = function() {
+      return this.player_count--;
+    };
+
     return Game;
 
   })();

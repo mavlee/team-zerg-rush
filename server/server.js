@@ -20,4 +20,16 @@
     return game.spawn_enemies();
   }, Game.SPAWN_INTERVAL);
 
+  io.sockets.on('connection', function(socket) {
+    game.player_join();
+    console.log('player joined');
+    setInterval(function() {
+      return socket.emit('game data', game.save());
+    }, Game.UPDATE_INTERVAL);
+    return socket.on('disconnect', function(socket) {
+      game.player_leave();
+      return console.log('player left');
+    });
+  });
+
 }).call(this);
