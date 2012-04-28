@@ -8,6 +8,11 @@
 
   io = require('socket.io').listen(46612);
 
+  io.configure(function() {
+    io.set("transports", ["xhr-polling"]);
+    return io.set("polling duration", 10);
+  });
+
   game = new Game();
 
   game.start_game();

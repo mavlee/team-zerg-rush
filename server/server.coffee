@@ -1,6 +1,12 @@
 Game = require('./game.js').Game
 Blob = require('./game.js').Blob
-io = require('socket.io').listen(46612)
+io = require('socket.io').listen(80)
+# assuming io is the Socket.IO server object
+io.configure(() ->
+    io.set("transports", ["xhr-polling"])
+    io.set("polling duration", 10)
+)
+
 game = new Game()
 game.start_game()
 
