@@ -24,7 +24,11 @@
     game.player_join();
     console.log('player joined');
     setInterval(function() {
-      return socket.emit('game data', game.save());
+      if (game.is_game_over()) {
+        return socket.emit('game over');
+      } else {
+        return socket.emit('game data', game.save());
+      }
     }, Game.UPDATE_INTERVAL);
     return socket.on('disconnect', function(socket) {
       game.player_leave();

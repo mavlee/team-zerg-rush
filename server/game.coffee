@@ -62,6 +62,11 @@ class Game
       ctx.start_game()
     , Game.GAME_RESTART_TIME)
 
+  is_game_over: () ->
+    if this.base_life == 0
+      return true
+    return false
+
   player_join: () ->
     this.player_count++
 

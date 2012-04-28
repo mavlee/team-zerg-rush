@@ -7,6 +7,10 @@ socket.on('game data', (data) ->
   draw(data['blob_list'])
 )
 
+socket.on('game over', () ->
+  draw_game_over()
+)
+
 # This has to be kept in sync with variables in Game
 draw = (blob_list) ->
   canvas.clearRect(0, 0, 960, 960)
@@ -15,3 +19,9 @@ draw = (blob_list) ->
     canvas.fillRect(blob.x, blob.y, blob.size, blob.size)
 
   canvas.strokeRect(960/2 - 25, 960/2 - 25, 50, 50)
+
+draw_game_over = () ->
+  canvas.fillStyle = "#000000"
+  canvas.font = "18pt Arial"
+  canvas.clearRect(0, 0, 960, 960)
+  canvas.fillText("GAME OVER", 430, 460)

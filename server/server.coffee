@@ -17,7 +17,10 @@ io.sockets.on('connection', (socket) ->
   console.log('player joined')
 
   setInterval(() ->
-    socket.emit('game data', game.save())
+    if game.is_game_over()
+      socket.emit('game over')
+    else
+      socket.emit('game data', game.save())
   , Game.UPDATE_INTERVAL)
 
   socket.on('disconnect', (socket) ->
