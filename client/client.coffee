@@ -70,6 +70,10 @@ canvasDom.onmousedown = (e) ->
   y = e.offsetY
   socket.emit('player click', {'x': x, 'y': y})
 
+# Prevent highlighting when clicking canvas
+canvasDom.onselectstart = () ->
+  return false
+
 # Clear annoying selection
 canvasDom.onmouseup = (e) ->
   window.getSelection().removeAllRanges()
