@@ -104,7 +104,9 @@
         if (blob.x < x && blob.x + blob.size > x && blob.y < y && blob.y + blob.size > y) {
           if (blob.life > 0) {
             blob.life--;
-            this.score++;
+            if (blob.life === 0) {
+              this.score++;
+            }
             return;
           }
         }

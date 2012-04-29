@@ -81,7 +81,8 @@ class Game
       if blob.x < x and blob.x + blob.size > x and blob.y < y and blob.y + blob.size > y
         if blob.life > 0
           blob.life--
-          this.score++
+          if blob.life == 0
+            this.score++
           return
 
   compute_state: () ->
