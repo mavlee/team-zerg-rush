@@ -17,7 +17,8 @@
   socket.on('game data', function(data) {
     draw(data['blob_list']);
     document.getElementById('score').innerHTML = data['score'];
-    return document.getElementById('life').innerHTML = data['life'];
+    document.getElementById('life').innerHTML = data['life'];
+    return document.getElementById('life').style.color = colors[data['life']];
   });
 
   socket.on('game over', function() {

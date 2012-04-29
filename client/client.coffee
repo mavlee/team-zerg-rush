@@ -12,6 +12,7 @@ socket.on('game data', (data) ->
   draw(data['blob_list'])
   document.getElementById('score').innerHTML = data['score']
   document.getElementById('life').innerHTML = data['life']
+  document.getElementById('life').style.color = colors[data['life']]
 )
 
 socket.on('game over', () ->
