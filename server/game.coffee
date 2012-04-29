@@ -3,7 +3,7 @@ class Game
   @BOARD_SIZE: 680 # square board
   @STARTING_BASE_LIFE: 10
   @BASE_SIZE: 50
-  @MAX_SPEED: 30
+  @MAX_SPEED: 40
   @GAME_RESTART_TIME: 5000
   @SPAWN_INTERVAL: 1000
   @UPDATE_INTERVAL: Math.round(1000/30)
@@ -35,15 +35,14 @@ class Game
     data =
       # Reduce blob list data sent
       blob_list: ({size: b.size, life: b.life, x: b.x, y: b.y} for b in this.blob_list)
-      #blob_list: this.blob_list
       life: this.base_life
       score: this.score
     return data
 
   # Calibrated for SPAWN_INTERVAL
   spawn_enemies: () ->
-    # Create 1 blob for every player (min 2)
-    for blob_no in [1..this.player_count + 1]
+    # Create 2 blobs for every player
+    for blob_no in [1..this.player_count * 2]
       # sizes from 30 to 50px
       size = Math.floor(Math.random() * (50 - 30 + 1)) + 30
       # life is from 1 to 2 x players, to a max of 10 
