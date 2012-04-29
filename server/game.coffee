@@ -87,8 +87,6 @@ class Game
           return
 
   compute_state: () ->
-    if this.is_game_over() == true
-      return
     for blob in this.blob_list
       # Update positions
       blob.updatePosition(Game.UPDATE_INTERVAL)

@@ -116,9 +116,6 @@
 
     Game.prototype.compute_state = function() {
       var blob, x, _i, _len, _ref;
-      if (this.is_game_over() === true) {
-        return;
-      }
       _ref = this.blob_list;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         blob = _ref[_i];
