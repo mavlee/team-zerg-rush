@@ -6,7 +6,7 @@
 
     Game.name = 'Game';
 
-    Game.BOARD_SIZE = 960;
+    Game.BOARD_SIZE = 680;
 
     Game.STARTING_BASE_LIFE = 10;
 
@@ -52,7 +52,7 @@
     };
 
     Game.prototype.spawn_enemies = function() {
-      var blob_no, life, pos, side, size, speed, vx, vy, x, y, _i, _ref;
+      var blob_no, c, life, pos, side, size, speed, vx, vy, x, y, _i, _ref;
       if (this.game_on !== true) {
         return;
       }
@@ -61,27 +61,28 @@
         life = Math.floor(Math.random() * (Math.min(this.player_count * 2, 10))) + 1;
         speed = Math.floor(Math.random() * 40) + 1;
         side = Math.floor(Math.random() * 4) + 1;
-        pos = Math.floor(Math.random() * 960) + 1;
+        pos = Math.floor(Math.random() * Game.BOARD_SIZE) + 1;
         if (side === 1) {
           y = 0 - size;
           x = pos;
         } else if (side === 2) {
-          y = 960;
+          y = Game.BOARD_SIZE;
           x = pos;
         } else if (side === 3) {
           y = pos;
           x = 0 - size;
         } else if (side === 4) {
           y = pos;
-          x = 960;
+          x = Game.BOARD_SIZE;
         }
+        c = Game.BOARD_SIZE / 2;
         vx = speed;
-        vy = 1.0 * speed * (y - 480) / (x - 480);
+        vy = 1.0 * speed * (y - c) / (x - c);
         if (vy > 40) {
           vy = speed;
-          vx = 1.0 * speed * (x - 480) / (y - 480);
+          vx = 1.0 * speed * (x - c) / (y - c);
         }
-        if (x > 480 && y > 480) {
+        if (x > c && y > c) {
           vx *= -1;
           vy *= -1;
         }

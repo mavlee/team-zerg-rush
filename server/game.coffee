@@ -1,6 +1,6 @@
 class Game
   # constants
-  @BOARD_SIZE: 960 # square board
+  @BOARD_SIZE: 680 # square board
   @STARTING_BASE_LIFE: 10
   @BASE_SIZE: 50
   @GAME_RESTART_TIME: 5000
@@ -43,14 +43,14 @@ class Game
       life = Math.floor(Math.random() * (Math.min(this.player_count*2, 10))) + 1
       speed = Math.floor(Math.random() * 40) + 1
       side = Math.floor(Math.random() * 4) + 1
-      pos = Math.floor(Math.random() * 960) + 1
+      pos = Math.floor(Math.random() * Game.BOARD_SIZE) + 1
       # top
       if side == 1
         y = 0 - size
         x = pos
       # bottom
       else if side == 2
-        y = 960
+        y = Game.BOARD_SIZE
         x = pos
       # left
       else if side == 3
@@ -59,14 +59,15 @@ class Game
       # right
       else if side == 4
         y = pos
-        x = 960
+        x = Game.BOARD_SIZE
 
+      c = Game.BOARD_SIZE / 2
       vx = speed
-      vy = 1.0 * speed * (y - 480) / (x - 480)
+      vy = 1.0 * speed * (y - c) / (x - c)
       if vy > 40
         vy = speed
-        vx = 1.0 * speed * (x - 480) / (y - 480)
-      if x > 480 and y > 480
+        vx = 1.0 * speed * (x - c) / (y - c)
+      if x > c and y > c
         vx *= -1
         vy *= -1
 
