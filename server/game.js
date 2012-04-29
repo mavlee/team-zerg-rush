@@ -53,6 +53,7 @@
       var data;
       data = {
         blob_list: this.blob_list,
+        life: this.base_life,
         score: this.score
       };
       return data;

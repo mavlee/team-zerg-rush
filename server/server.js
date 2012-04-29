@@ -24,7 +24,7 @@
 
   io.sockets.on('connection', function(socket) {
     game.player_join();
-    socket.emit('player count', {
+    io.sockets.emit('player count', {
       'players': game.get_player_count()
     });
     socket.emit('high score', {
@@ -40,6 +40,7 @@
         if (game.is_game_over()) {
           if (game.is_game_on()) {
             game.game_on = false;
+            socket.emit('game data', game.save());
             socket.emit('game over');
             return socket.emit('high score', {
               'high score': game.get_high_score()
@@ -52,7 +53,7 @@
     }, Game.UPDATE_INTERVAL);
     socket.on('disconnect', function(socket) {
       game.player_leave();
-      socket.emit('player count', {
+      io.sockets.emit('player count', {
         'players': game.get_player_count()
       });
       return console.log('player left');

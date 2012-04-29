@@ -23,7 +23,9 @@ setInterval(() ->
 
 io.sockets.on('connection', (socket) ->
   game.player_join()
-  socket.emit('player count', {'players': game.get_player_count()})
+
+  # Broadcast player count to all players
+  io.sockets.emit('player count', {'players': game.get_player_count()})
   socket.emit('high score', {'high score': game.get_high_score()})
   if game.is_game_over()
     socket.emit('game over')
@@ -35,6 +37,7 @@ io.sockets.on('connection', (socket) ->
       if game.is_game_over()
         if game.is_game_on()
           game.game_on = false
+          socket.emit('game data', game.save())
           socket.emit('game over')
           socket.emit('high score', {'high score': game.get_high_score()})
       else
@@ -43,7 +46,7 @@ io.sockets.on('connection', (socket) ->
 
   socket.on('disconnect', (socket) ->
     game.player_leave()
-    socket.emit('player count', {'players': game.get_player_count()})
+    io.sockets.emit('player count', {'players': game.get_player_count()})
     console.log('player left')
   )
 

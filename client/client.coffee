@@ -11,6 +11,7 @@ colors = ['', '#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '0000FF', '#6600FF', '
 socket.on('game data', (data) ->
   draw(data['blob_list'])
   document.getElementById('score').innerHTML = data['score']
+  document.getElementById('life').innerHTML = data['life']
 )
 
 socket.on('game over', () ->
