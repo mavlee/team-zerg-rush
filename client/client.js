@@ -2,7 +2,7 @@
 (function() {
   var canvas, canvasDom, colors, draw, draw_game_over, socket;
 
-  socket = io.connect('http://localhost:8080');
+  socket = io.connect('ec2-184-72-64-221.compute-1.amazonaws.com:8080');
 
   canvasDom = document.getElementById('canvas');
 

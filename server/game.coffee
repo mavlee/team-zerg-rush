@@ -12,6 +12,7 @@ class Game
   base_life: 0
   player_count: 0
   enemies_killed: 0
+  high_score: 0
   game_on: false
 
   constructor: () ->
@@ -19,6 +20,7 @@ class Game
     this.base_life = Game.STARTING_BASE_LIFE
 
   start_game: () ->
+    this.blob_list = []
     this.base_life = Game.STARTING_BASE_LIFE
     this.enemies_killed = 0
     this.game_on = true
@@ -39,7 +41,7 @@ class Game
       size = Math.floor(Math.random() * (50 - 10 + 1)) + 10
       # life is from 1 to 2 x players, to a max of 10 
       life = Math.floor(Math.random() * (Math.min(this.player_count*2, 10))) + 1
-      speed = Math.floor(Math.random() * (Math.min(this.player_count*40, 200) - 40 + 1)) + 40
+      speed = Math.floor(Math.random() * 40) + 1
       side = Math.floor(Math.random() * 4) + 1
       pos = Math.floor(Math.random() * 960) + 1
       # top
@@ -61,7 +63,7 @@ class Game
 
       vx = speed
       vy = 1.0 * speed * (y - 480) / (x - 480)
-      if vy > Math.min(this.player_count*40, 200)
+      if vy > 40
         vy = speed
         vx = 1.0 * speed * (x - 480) / (y - 480)
       if x > 480 and y > 480
@@ -76,6 +78,7 @@ class Game
       if blob.x < x and blob.x + blob.size > x and blob.y < y and blob.y + blob.size > y
         if blob.life > 0
           blob.life--
+          this.enemies_killed++
           return
 
   compute_state: () ->
@@ -96,6 +99,8 @@ class Game
     console.log('game_over')
     this.blob_list = []
     this.game_on = false
+    if this.enemies_killed > this.high_score
+      this.high_score = this.enemies_killed
     ctx = this
     setTimeout(() ->
       ctx.start_game()
@@ -105,6 +110,9 @@ class Game
     if this.base_life == 0
       return true
     return false
+
+  get_player_count: () ->
+    return this.player_count
 
   player_join: () ->
     this.player_count++

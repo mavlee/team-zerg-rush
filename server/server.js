@@ -13,11 +13,15 @@
   game.start_game();
 
   setInterval(function() {
-    return game.compute_state();
+    if (game.get_player_count() > 0) {
+      return game.compute_state();
+    }
   }, Game.UPDATE_INTERVAL);
 
   setInterval(function() {
-    return game.spawn_enemies();
+    if (game.get_player_count() > 0) {
+      return game.spawn_enemies();
+    }
   }, Game.SPAWN_INTERVAL);
 
   io.sockets.on('connection', function(socket) {

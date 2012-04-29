@@ -26,6 +26,8 @@
 
     Game.prototype.enemies_killed = 0;
 
+    Game.prototype.high_score = 0;
+
     Game.prototype.game_on = false;
 
     function Game() {
@@ -34,6 +36,7 @@
     }
 
     Game.prototype.start_game = function() {
+      this.blob_list = [];
       this.base_life = Game.STARTING_BASE_LIFE;
       this.enemies_killed = 0;
       this.game_on = true;
@@ -56,7 +59,7 @@
       for (blob_no = _i = 1, _ref = this.player_count * 2; 1 <= _ref ? _i <= _ref : _i >= _ref; blob_no = 1 <= _ref ? ++_i : --_i) {
         size = Math.floor(Math.random() * (50 - 10 + 1)) + 10;
         life = Math.floor(Math.random() * (Math.min(this.player_count * 2, 10))) + 1;
-        speed = Math.floor(Math.random() * (Math.min(this.player_count * 40, 200) - 40 + 1)) + 40;
+        speed = Math.floor(Math.random() * 40) + 1;
         side = Math.floor(Math.random() * 4) + 1;
         pos = Math.floor(Math.random() * 960) + 1;
         if (side === 1) {
@@ -74,7 +77,7 @@
         }
         vx = speed;
         vy = 1.0 * speed * (y - 480) / (x - 480);
-        if (vy > Math.min(this.player_count * 40, 200)) {
+        if (vy > 40) {
           vy = speed;
           vx = 1.0 * speed * (x - 480) / (y - 480);
         }
@@ -95,6 +98,7 @@
         if (blob.x < x && blob.x + blob.size > x && blob.y < y && blob.y + blob.size > y) {
           if (blob.life > 0) {
             blob.life--;
+            this.enemies_killed++;
             return;
           }
         }
@@ -137,6 +141,9 @@
       console.log('game_over');
       this.blob_list = [];
       this.game_on = false;
+      if (this.enemies_killed > this.high_score) {
+        this.high_score = this.enemies_killed;
+      }
       ctx = this;
       return setTimeout(function() {
         return ctx.start_game();
@@ -148,6 +155,10 @@
         return true;
       }
       return false;
+    };
+
+    Game.prototype.get_player_count = function() {
+      return this.player_count;
     };
 
     Game.prototype.player_join = function() {

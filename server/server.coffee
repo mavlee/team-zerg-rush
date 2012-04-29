@@ -12,11 +12,13 @@ game = new Game()
 game.start_game()
 
 setInterval(() ->
-  game.compute_state()
+  if game.get_player_count() > 0
+    game.compute_state()
 , Game.UPDATE_INTERVAL)
 
 setInterval(() ->
-  game.spawn_enemies()
+  if game.get_player_count() > 0
+    game.spawn_enemies()
 , Game.SPAWN_INTERVAL)
 
 io.sockets.on('connection', (socket) ->
