@@ -1,5 +1,5 @@
-#socket = io.connect('ec2-184-72-64-221.compute-1.amazonaws.com:8080')
-socket = io.connect('http://localhost:8080')
+socket = io.connect('ec2-184-72-64-221.compute-1.amazonaws.com:8080')
+#socket = io.connect('http://localhost:8080')
 canvasDom = document.getElementById('canvas')
 canvas = document.getElementById('canvas').getContext('2d')
 window.canvasDom = canvasDom
