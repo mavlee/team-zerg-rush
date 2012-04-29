@@ -69,11 +69,11 @@ class Game
         x = Game.BOARD_SIZE
 
       c = Game.BOARD_SIZE / 2
-      vx = speed
-      vy = 1.0 * speed * (y - c) / (x - c)
+      vx = if x > c then -1 * speed else speed
+      vy = 1.0 * vx * (y - c) / (x - c)
       if Math.abs(vy) > Game.MAX_SPEED
-        vy = if vy > 0 then speed else -1 * speed
-        vx = 1.0 * speed * (x - c) / (y - c)
+        vy = if y > c then -1 * speed else speed
+        vx = 1.0 * vy * (x - c) / (y - c)
       if x > c and y > c
         vx *= -1
         vy *= -1
