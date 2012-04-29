@@ -50,13 +50,13 @@
     canvas.fillStyle = "#000000";
     canvas.font = "18pt Arial";
     canvas.clearRect(0, 0, BOARD_SIZE, BOARD_SIZE);
-    return canvas.fillText("GAME OVER", BOARD_SIZE / 2 - 50, BOARD_SIZE / 2 - 20);
+    return canvas.fillText("GAME OVER", BOARD_SIZE / 2 - 100, BOARD_SIZE / 2 - 20);
   };
 
   canvasDom.onclick = function(e) {
     var x, y;
-    x = e.pageX - canvasDom.offsetLeft;
-    y = e.pageY - canvasDom.offsetTop;
+    x = e.offsetX;
+    y = e.offsetY;
     return socket.emit('player click', {
       'x': x,
       'y': y
