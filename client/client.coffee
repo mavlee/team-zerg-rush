@@ -48,3 +48,6 @@ canvasDom.onclick = (e) ->
   x = e.offsetX
   y = e.offsetY
   socket.emit('player click', {'x': x, 'y': y})
+
+canvasDom.onmouseup = (e) ->
+  window.getSelection().removeAllRanges()

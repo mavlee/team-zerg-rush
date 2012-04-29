@@ -63,4 +63,8 @@
     });
   };
 
+  canvasDom.onmouseup = function(e) {
+    return window.getSelection().removeAllRanges();
+  };
+
 }).call(this);
