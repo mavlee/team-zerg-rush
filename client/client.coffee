@@ -65,7 +65,7 @@ draw_game_over = () ->
   canvas.fillText("GAME OVER", BOARD_SIZE/2-100, BOARD_SIZE/2-20)
 
 # Send click data
-canvasDom.onclick = (e) ->
+canvasDom.onmousedown = (e) ->
   x = e.offsetX
   y = e.offsetY
   socket.emit('player click', {'x': x, 'y': y})
