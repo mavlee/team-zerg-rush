@@ -26,6 +26,23 @@
     }
   }, Game.SPAWN_INTERVAL);
 
+  setInterval(function() {
+    if (game.get_player_count() > 0) {
+      game.compute_state();
+      if (game.is_game_over()) {
+        io.sockets.emit('game over');
+        return io.sockets.emit('high score', {
+          'high score': game.get_high_score()
+        });
+      } else {
+        io.sockets.emit('game data', game.save());
+        return io.sockets.emit('mice', {
+          'mice': mice
+        });
+      }
+    }
+  }, Game.UPDATE_INTERVAL);
+
   io.sockets.on('connection', function(socket) {
     game.player_join();
     io.sockets.emit('player count', {
@@ -42,22 +59,6 @@
       socket.emit('game over');
     }
     console.log('player joined');
-    setInterval(function() {
-      if (game.get_player_count() > 0) {
-        game.compute_state();
-        if (game.is_game_over()) {
-          socket.emit('game over');
-          return socket.emit('high score', {
-            'high score': game.get_high_score()
-          });
-        } else {
-          socket.emit('game data', game.save());
-          return socket.emit('mice', {
-            'mice': mice
-          });
-        }
-      }
-    }, Game.UPDATE_INTERVAL);
     socket.on('disconnect', function(socket) {
       game.player_leave();
       io.sockets.emit('player count', {

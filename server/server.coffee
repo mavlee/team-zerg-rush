@@ -23,6 +23,24 @@ setInterval(() ->
     game.spawn_enemies()
 , Game.SPAWN_INTERVAL)
 
+# Send game data
+setInterval(() ->
+  if game.get_player_count() > 0
+    game.compute_state()
+    if game.is_game_over()
+      io.sockets.emit('game over')
+      io.sockets.emit('high score', {'high score': game.get_high_score()})
+    else
+      io.sockets.emit('game data', game.save())
+      io.sockets.emit('mice', {'mice': mice})
+, Game.UPDATE_INTERVAL)
+
+# Uncomment if mice data being sent too frequently
+#setInterval(() ->
+#  if game.is_game_over() == false
+#    socket.emit('mice', {'mice': mice})
+#, 250)
+
 io.sockets.on('connection', (socket) ->
   game.player_join()
 
@@ -35,25 +53,7 @@ io.sockets.on('connection', (socket) ->
   if game.is_game_over()
     socket.emit('game over')
   console.log('player joined')
-
-  # Send game data
-  setInterval(() ->
-    if game.get_player_count() > 0
-      game.compute_state()
-      if game.is_game_over()
-        socket.emit('game over')
-        socket.emit('high score', {'high score': game.get_high_score()})
-      else
-        socket.emit('game data', game.save())
-        socket.emit('mice', {'mice': mice})
-  , Game.UPDATE_INTERVAL)
-
-  # Uncomment if mice data being sent too frequently
-  #setInterval(() ->
-  #  if game.is_game_over() == false
-  #    socket.emit('mice', {'mice': mice})
-  #, 250)
-
+  
   socket.on('disconnect', (socket) ->
     game.player_leave()
     io.sockets.emit('player count', {'players': game.get_player_count()})

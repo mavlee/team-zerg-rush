@@ -12,7 +12,7 @@
 
     Game.BASE_SIZE = 50;
 
-    Game.MAX_SPEED = 30;
+    Game.MAX_SPEED = 60;
 
     Game.GAME_RESTART_TIME = 5000;
 
