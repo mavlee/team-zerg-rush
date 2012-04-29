@@ -43,11 +43,11 @@ class Game
   # Calibrated for SPAWN_INTERVAL
   spawn_enemies: () ->
     # Create 1 blob for every player (min 2)
-    for blob_no in [1..Math.max(2, this.player_count)]
+    for blob_no in [1..this.player_count + 1]
       # sizes from 30 to 50px
       size = Math.floor(Math.random() * (50 - 30 + 1)) + 30
       # life is from 1 to 2 x players, to a max of 10 
-      life = Math.floor(Math.random() * (Math.min(Math.max(2, this.player_count), 10))) + 1
+      life = Math.floor(Math.random() * Math.min(this.player_count + 1, 10)) + 1
       speed = Math.floor(Math.random() * Game.MAX_SPEED) + 1
       side = Math.floor(Math.random() * 4) + 1
       pos = Math.floor(Math.random() * Game.BOARD_SIZE) + 1

@@ -78,9 +78,9 @@
     Game.prototype.spawn_enemies = function() {
       var blob_no, c, life, pos, side, size, speed, vx, vy, x, y, _i, _ref, _results;
       _results = [];
-      for (blob_no = _i = 1, _ref = Math.max(2, this.player_count); 1 <= _ref ? _i <= _ref : _i >= _ref; blob_no = 1 <= _ref ? ++_i : --_i) {
+      for (blob_no = _i = 1, _ref = this.player_count + 1; 1 <= _ref ? _i <= _ref : _i >= _ref; blob_no = 1 <= _ref ? ++_i : --_i) {
         size = Math.floor(Math.random() * (50 - 30 + 1)) + 30;
-        life = Math.floor(Math.random() * (Math.min(Math.max(2, this.player_count), 10))) + 1;
+        life = Math.floor(Math.random() * Math.min(this.player_count + 1, 10)) + 1;
         speed = Math.floor(Math.random() * Game.MAX_SPEED) + 1;
         side = Math.floor(Math.random() * 4) + 1;
         pos = Math.floor(Math.random() * Game.BOARD_SIZE) + 1;
