@@ -37,7 +37,6 @@ io.sockets.on('connection', (socket) ->
       if game.is_game_over()
         if game.is_game_on()
           game.game_on = false
-          socket.emit('game data', game.save())
           socket.emit('game over')
           socket.emit('high score', {'high score': game.get_high_score()})
       else

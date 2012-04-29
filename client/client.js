@@ -12,7 +12,7 @@
 
   BOARD_SIZE = 680;
 
-  colors = ['', '#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '0000FF', '#6600FF', '#8B00FF', '#330066', '#333333', '#000000'];
+  colors = ['#000000', '#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '0000FF', '#6600FF', '#8B00FF', '#330066', '#333333', '#000000'];
 
   socket.on('game data', function(data) {
     draw(data['blob_list']);
@@ -22,7 +22,9 @@
   });
 
   socket.on('game over', function() {
-    return draw_game_over();
+    draw_game_over();
+    document.getElementById('life').innerHTML = 0;
+    return document.getElementById('life').style.color = colors[0];
   });
 
   socket.on('player count', function(data) {
