@@ -3,7 +3,7 @@ class Game
   @BOARD_SIZE: 680 # square board
   @STARTING_BASE_LIFE: 10
   @BASE_SIZE: 50
-  @MAX_SPEED: 30
+  @MAX_SPEED: 20
   @GAME_RESTART_TIME: 5000
   @SPAWN_INTERVAL: 1000
   @UPDATE_INTERVAL: Math.round(1000/30)
@@ -39,12 +39,12 @@ class Game
 
   # Calibrated for SPAWN_INTERVAL
   spawn_enemies: () ->
-    # Create 2 blobs for every player
-    for blob_no in [1..this.player_count * 2]
+    # Create 1 blob for every player (min 2)
+    for blob_no in [1..Math.max(2, this.player_count)]
       # sizes from 10 to 50px
       size = Math.floor(Math.random() * (50 - 10 + 1)) + 10
       # life is from 1 to 2 x players, to a max of 10 
-      life = Math.floor(Math.random() * (Math.min(this.player_count*2, 10))) + 1
+      life = Math.floor(Math.random() * (Math.min(Math.max(2, this.player_count), 10))) + 1
       speed = Math.floor(Math.random() * Game.MAX_SPEED) + 1
       side = Math.floor(Math.random() * 4) + 1
       pos = Math.floor(Math.random() * Game.BOARD_SIZE) + 1

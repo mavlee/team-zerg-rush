@@ -38,13 +38,10 @@
       if (game.get_player_count() > 0) {
         game.compute_state();
         if (game.is_game_over()) {
-          if (game.is_game_on()) {
-            game.game_on = false;
-            socket.emit('game over');
-            return socket.emit('high score', {
-              'high score': game.get_high_score()
-            });
-          }
+          socket.emit('game over');
+          return socket.emit('high score', {
+            'high score': game.get_high_score()
+          });
         } else {
           return socket.emit('game data', game.save());
         }

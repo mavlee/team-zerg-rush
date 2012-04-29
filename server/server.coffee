@@ -35,10 +35,8 @@ io.sockets.on('connection', (socket) ->
     if game.get_player_count() > 0
       game.compute_state()
       if game.is_game_over()
-        if game.is_game_on()
-          game.game_on = false
-          socket.emit('game over')
-          socket.emit('high score', {'high score': game.get_high_score()})
+        socket.emit('game over')
+        socket.emit('high score', {'high score': game.get_high_score()})
       else
         socket.emit('game data', game.save())
   , Game.UPDATE_INTERVAL)
