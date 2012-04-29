@@ -15,16 +15,21 @@
   colors = ['', '#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '0000FF', '#6600FF', '#8B00FF', '#330066', '#333333', '#000000'];
 
   socket.on('game data', function(data) {
-    return draw(data['blob_list']);
+    draw(data['blob_list']);
+    return document.getElementById('score').innerHTML = data['score'];
   });
 
   socket.on('game over', function() {
     return draw_game_over();
   });
 
-  socket.on('player count', function(data) {});
+  socket.on('player count', function(data) {
+    return document.getElementById('player-count').innerHTML = data['players'];
+  });
 
-  socket.on('high score', function(data) {});
+  socket.on('high score', function(data) {
+    return document.getElementById('high-score').innerHTML = data['high score'];
+  });
 
   draw = function(blob_list) {
     var blob, _i, _len;
