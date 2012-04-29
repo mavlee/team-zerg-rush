@@ -3,13 +3,14 @@ class Game
   @BOARD_SIZE: 680 # square board
   @STARTING_BASE_LIFE: 10
   @BASE_SIZE: 50
-  @MAX_SPEED: 20
+  @MAX_SPEED: 30
   @GAME_RESTART_TIME: 5000
   @SPAWN_INTERVAL: 1000
   @UPDATE_INTERVAL: Math.round(1000/30)
 
   # game variables
   blob_list: []
+  click_queue: []
   base_life: 0
   player_count: 0
   score: 0
@@ -32,7 +33,9 @@ class Game
 
   save: () ->
     data =
-      blob_list: this.blob_list
+      # Reduce blob list data sent
+      blob_list: ({size: b.size, life: b.life, x: b.x, y: b.y} for b in this.blob_list)
+      #blob_list: this.blob_list
       life: this.base_life
       score: this.score
     return data
@@ -68,8 +71,8 @@ class Game
       c = Game.BOARD_SIZE / 2
       vx = speed
       vy = 1.0 * speed * (y - c) / (x - c)
-      if vy > Game.MAX_SPEED
-        vy = speed
+      if Math.abs(vy) > Game.MAX_SPEED
+        vy = if vy > 0 then speed else -1 * speed
         vx = 1.0 * speed * (x - c) / (y - c)
       if x > c and y > c
         vx *= -1
@@ -78,29 +81,41 @@ class Game
       this.blob_list.push(new Blob(size, x, y, vx, vy, life))
 
   register_click: (x, y) ->
-    for blob in this.blob_list
-      if blob.x < x and blob.x + blob.size > x and blob.y < y and blob.y + blob.size > y
-        if blob.life > 0
-          blob.life--
-          if blob.life == 0
-            this.score++
-          return
+    this.click_queue.push([x, y])
 
   compute_state: () ->
+    if this.is_game_over()
+      return
+
+    # Process clicks first
+    for click in this.click_queue
+      for blob in this.blob_list
+        if blob.x < click[0] and blob.x + blob.size > click[0] and blob.y < click[1] and blob.y + blob.size > click[1]
+          if blob.life > 0
+            blob.life--
+            if blob.life == 0
+              this.score++
+            break
+
+    # Update blob positions
     for blob in this.blob_list
       # Update positions
       blob.updatePosition(Game.UPDATE_INTERVAL)
       # Check if the base has been breached
-      if blob.isTouchingBase(Game.BOARD_SIZE, Game.BASE_SIZE)
+      if blob.life > 0 and blob.isTouchingBase(Game.BOARD_SIZE, Game.BASE_SIZE)
         blob.life = 0
         this.base_life--
+
+    # Clear out the list, check for game over
     this.blob_list = (x for x in this.blob_list when x.life > 0)
     if this.base_life == 0
       this.game_over()
+    this.click_queue = []
 
   game_over: () ->
     console.log('game_over')
     this.blob_list = []
+    this.click_queue = []
     if this.score > this.high_score
       this.high_score = this.score
     ctx = this

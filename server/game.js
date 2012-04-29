@@ -12,7 +12,7 @@
 
     Game.BASE_SIZE = 50;
 
-    Game.MAX_SPEED = 20;
+    Game.MAX_SPEED = 30;
 
     Game.GAME_RESTART_TIME = 5000;
 
@@ -21,6 +21,8 @@
     Game.UPDATE_INTERVAL = Math.round(1000 / 30);
 
     Game.prototype.blob_list = [];
+
+    Game.prototype.click_queue = [];
 
     Game.prototype.base_life = 0;
 
@@ -50,9 +52,23 @@
     };
 
     Game.prototype.save = function() {
-      var data;
+      var b, data;
       data = {
-        blob_list: this.blob_list,
+        blob_list: (function() {
+          var _i, _len, _ref, _results;
+          _ref = this.blob_list;
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            b = _ref[_i];
+            _results.push({
+              size: b.size,
+              life: b.life,
+              x: b.x,
+              y: b.y
+            });
+          }
+          return _results;
+        }).call(this),
         life: this.base_life,
         score: this.score
       };
@@ -84,8 +100,8 @@
         c = Game.BOARD_SIZE / 2;
         vx = speed;
         vy = 1.0 * speed * (y - c) / (x - c);
-        if (vy > Game.MAX_SPEED) {
-          vy = speed;
+        if (Math.abs(vy) > Game.MAX_SPEED) {
+          vy = vy > 0 ? speed : -1 * speed;
           vx = 1.0 * speed * (x - c) / (y - c);
         }
         if (x > c && y > c) {
@@ -98,39 +114,46 @@
     };
 
     Game.prototype.register_click = function(x, y) {
-      var blob, _i, _len, _ref;
-      _ref = this.blob_list;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        blob = _ref[_i];
-        if (blob.x < x && blob.x + blob.size > x && blob.y < y && blob.y + blob.size > y) {
-          if (blob.life > 0) {
-            blob.life--;
-            if (blob.life === 0) {
-              this.score++;
-            }
-            return;
-          }
-        }
-      }
+      return this.click_queue.push([x, y]);
     };
 
     Game.prototype.compute_state = function() {
-      var blob, x, _i, _len, _ref;
-      _ref = this.blob_list;
+      var blob, click, x, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2;
+      if (this.is_game_over()) {
+        return;
+      }
+      _ref = this.click_queue;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        blob = _ref[_i];
+        click = _ref[_i];
+        _ref1 = this.blob_list;
+        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+          blob = _ref1[_j];
+          if (blob.x < click[0] && blob.x + blob.size > click[0] && blob.y < click[1] && blob.y + blob.size > click[1]) {
+            if (blob.life > 0) {
+              blob.life--;
+              if (blob.life === 0) {
+                this.score++;
+              }
+              break;
+            }
+          }
+        }
+      }
+      _ref2 = this.blob_list;
+      for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
+        blob = _ref2[_k];
         blob.updatePosition(Game.UPDATE_INTERVAL);
-        if (blob.isTouchingBase(Game.BOARD_SIZE, Game.BASE_SIZE)) {
+        if (blob.life > 0 && blob.isTouchingBase(Game.BOARD_SIZE, Game.BASE_SIZE)) {
           blob.life = 0;
           this.base_life--;
         }
       }
       this.blob_list = (function() {
-        var _j, _len1, _ref1, _results;
-        _ref1 = this.blob_list;
+        var _l, _len3, _ref3, _results;
+        _ref3 = this.blob_list;
         _results = [];
-        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-          x = _ref1[_j];
+        for (_l = 0, _len3 = _ref3.length; _l < _len3; _l++) {
+          x = _ref3[_l];
           if (x.life > 0) {
             _results.push(x);
           }
@@ -138,14 +161,16 @@
         return _results;
       }).call(this);
       if (this.base_life === 0) {
-        return this.game_over();
+        this.game_over();
       }
+      return this.click_queue = [];
     };
 
     Game.prototype.game_over = function() {
       var ctx;
       console.log('game_over');
       this.blob_list = [];
+      this.click_queue = [];
       if (this.score > this.high_score) {
         this.high_score = this.score;
       }
