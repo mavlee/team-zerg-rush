@@ -12,6 +12,8 @@
 
     Game.BASE_SIZE = 50;
 
+    Game.MAX_SPEED = 30;
+
     Game.GAME_RESTART_TIME = 5000;
 
     Game.SPAWN_INTERVAL = 1000;
@@ -24,7 +26,7 @@
 
     Game.prototype.player_count = 0;
 
-    Game.prototype.enemies_killed = 0;
+    Game.prototype.score = 0;
 
     Game.prototype.high_score = 0;
 
@@ -35,10 +37,14 @@
       this.base_life = Game.STARTING_BASE_LIFE;
     }
 
+    Game.prototype.is_game_on = function() {
+      return this.game_on;
+    };
+
     Game.prototype.start_game = function() {
       this.blob_list = [];
       this.base_life = Game.STARTING_BASE_LIFE;
-      this.enemies_killed = 0;
+      this.score = 0;
       this.game_on = true;
       return console.log('game started');
     };
@@ -46,20 +52,22 @@
     Game.prototype.save = function() {
       var data;
       data = {
-        blob_list: this.blob_list
+        blob_list: this.blob_list,
+        score: this.score
       };
       return data;
     };
 
     Game.prototype.spawn_enemies = function() {
-      var blob_no, c, life, pos, side, size, speed, vx, vy, x, y, _i, _ref;
+      var blob_no, c, life, pos, side, size, speed, vx, vy, x, y, _i, _ref, _results;
       if (this.game_on !== true) {
         return;
       }
+      _results = [];
       for (blob_no = _i = 1, _ref = this.player_count * 2; 1 <= _ref ? _i <= _ref : _i >= _ref; blob_no = 1 <= _ref ? ++_i : --_i) {
         size = Math.floor(Math.random() * (50 - 10 + 1)) + 10;
         life = Math.floor(Math.random() * (Math.min(this.player_count * 2, 10))) + 1;
-        speed = Math.floor(Math.random() * 40) + 1;
+        speed = Math.floor(Math.random() * Game.MAX_SPEED) + 1;
         side = Math.floor(Math.random() * 4) + 1;
         pos = Math.floor(Math.random() * Game.BOARD_SIZE) + 1;
         if (side === 1) {
@@ -78,7 +86,7 @@
         c = Game.BOARD_SIZE / 2;
         vx = speed;
         vy = 1.0 * speed * (y - c) / (x - c);
-        if (vy > 40) {
+        if (vy > Game.MAX_SPEED) {
           vy = speed;
           vx = 1.0 * speed * (x - c) / (y - c);
         }
@@ -86,9 +94,9 @@
           vx *= -1;
           vy *= -1;
         }
-        this.blob_list.push(new Blob(size, x, y, vx, vy, life));
+        _results.push(this.blob_list.push(new Blob(size, x, y, vx, vy, life)));
       }
-      return console.log('enemies spawned');
+      return _results;
     };
 
     Game.prototype.register_click = function(x, y) {
@@ -99,7 +107,7 @@
         if (blob.x < x && blob.x + blob.size > x && blob.y < y && blob.y + blob.size > y) {
           if (blob.life > 0) {
             blob.life--;
-            this.enemies_killed++;
+            this.score++;
             return;
           }
         }
@@ -142,8 +150,8 @@
       console.log('game_over');
       this.blob_list = [];
       this.game_on = false;
-      if (this.enemies_killed > this.high_score) {
-        this.high_score = this.enemies_killed;
+      if (this.score > this.high_score) {
+        this.high_score = this.score;
       }
       ctx = this;
       return setTimeout(function() {
@@ -152,7 +160,7 @@
     };
 
     Game.prototype.is_game_over = function() {
-      if (this.base_life === 0) {
+      if (this.base_life <= 0) {
         return true;
       }
       return false;
@@ -168,6 +176,14 @@
 
     Game.prototype.player_leave = function() {
       return this.player_count--;
+    };
+
+    Game.prototype.get_score = function() {
+      return this.score;
+    };
+
+    Game.prototype.get_high_score = function() {
+      return this.high_score;
     };
 
     return Game;

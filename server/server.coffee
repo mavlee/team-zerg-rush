@@ -2,37 +2,47 @@ Game = require('./game.js').Game
 Blob = require('./game.js').Blob
 io = require('socket.io').listen(8080)
 
+# Socket.io configurations
+# reduce logging
+io.set('log level', 1)
+io.set('transports', ['websocket'
+  , 'flashsocket'
+  , 'htmlfile'
+  , 'xhr-polling'
+  , 'jsonp-polling'
+])
+
 game = new Game()
 game.start_game()
 
 setInterval(() ->
-  if game.get_player_count() > 0
-    game.compute_state()
-, Game.UPDATE_INTERVAL)
-
-setInterval(() ->
-  if game.get_player_count() > 0
+  if game.get_player_count() > 0 and game.is_game_on()
     game.spawn_enemies()
 , Game.SPAWN_INTERVAL)
 
 io.sockets.on('connection', (socket) ->
   game.player_join()
+  socket.emit('player count', {'players': game.get_player_count()})
+  socket.emit('high score', {'high score': game.get_high_score()})
   console.log('player joined')
 
   setInterval(() ->
-    if game.is_game_over()
-      socket.emit('game over')
-    else
-      socket.emit('game data', game.save())
+    if game.get_player_count() > 0
+      game.compute_state()
+      if game.is_game_over()
+        socket.emit('game over')
+        socket.emit('high score', {'high score': game.get_high_score()})
+      else
+        socket.emit('game data', game.save())
   , Game.UPDATE_INTERVAL)
 
   socket.on('disconnect', (socket) ->
     game.player_leave()
+    socket.emit('player count', {'players': game.get_player_count()})
     console.log('player left')
   )
 
   socket.on('player click', (data) ->
-    console.log(data)
     game.register_click(data['x'], data['y'])
   )
 )

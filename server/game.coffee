@@ -3,6 +3,7 @@ class Game
   @BOARD_SIZE: 680 # square board
   @STARTING_BASE_LIFE: 10
   @BASE_SIZE: 50
+  @MAX_SPEED: 30
   @GAME_RESTART_TIME: 5000
   @SPAWN_INTERVAL: 1000
   @UPDATE_INTERVAL: Math.round(1000/30)
@@ -11,7 +12,7 @@ class Game
   blob_list: []
   base_life: 0
   player_count: 0
-  enemies_killed: 0
+  score: 0
   high_score: 0
   game_on: false
 
@@ -19,16 +20,20 @@ class Game
     this.blob_list = []
     this.base_life = Game.STARTING_BASE_LIFE
 
+  is_game_on: () ->
+    return this.game_on
+
   start_game: () ->
     this.blob_list = []
     this.base_life = Game.STARTING_BASE_LIFE
-    this.enemies_killed = 0
+    this.score = 0
     this.game_on = true
     console.log('game started')
 
   save: () ->
     data =
       blob_list: this.blob_list
+      score: this.score
     return data
 
   # Calibrated for SPAWN_INTERVAL
@@ -41,7 +46,7 @@ class Game
       size = Math.floor(Math.random() * (50 - 10 + 1)) + 10
       # life is from 1 to 2 x players, to a max of 10 
       life = Math.floor(Math.random() * (Math.min(this.player_count*2, 10))) + 1
-      speed = Math.floor(Math.random() * 40) + 1
+      speed = Math.floor(Math.random() * Game.MAX_SPEED) + 1
       side = Math.floor(Math.random() * 4) + 1
       pos = Math.floor(Math.random() * Game.BOARD_SIZE) + 1
       # top
@@ -64,7 +69,7 @@ class Game
       c = Game.BOARD_SIZE / 2
       vx = speed
       vy = 1.0 * speed * (y - c) / (x - c)
-      if vy > 40
+      if vy > Game.MAX_SPEED
         vy = speed
         vx = 1.0 * speed * (x - c) / (y - c)
       if x > c and y > c
@@ -72,14 +77,13 @@ class Game
         vy *= -1
 
       this.blob_list.push(new Blob(size, x, y, vx, vy, life))
-    console.log('enemies spawned')
 
   register_click: (x, y) ->
     for blob in this.blob_list
       if blob.x < x and blob.x + blob.size > x and blob.y < y and blob.y + blob.size > y
         if blob.life > 0
           blob.life--
-          this.enemies_killed++
+          this.score++
           return
 
   compute_state: () ->
@@ -100,15 +104,15 @@ class Game
     console.log('game_over')
     this.blob_list = []
     this.game_on = false
-    if this.enemies_killed > this.high_score
-      this.high_score = this.enemies_killed
+    if this.score > this.high_score
+      this.high_score = this.score
     ctx = this
     setTimeout(() ->
       ctx.start_game()
     , Game.GAME_RESTART_TIME)
 
   is_game_over: () ->
-    if this.base_life == 0
+    if this.base_life <= 0
       return true
     return false
 
@@ -120,6 +124,12 @@ class Game
 
   player_leave: () ->
     this.player_count--
+
+  get_score: () ->
+    return this.score
+
+  get_high_score: () ->
+    return this.high_score
 
 # Enemies - square blob
 class Blob

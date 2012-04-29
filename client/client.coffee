@@ -10,10 +10,19 @@ colors = ['', '#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '0000FF', '#6600FF', '
 
 socket.on('game data', (data) ->
   draw(data['blob_list'])
+  #data['score']
 )
 
 socket.on('game over', () ->
   draw_game_over()
+)
+
+socket.on('player count', (data) ->
+  #draw(data['players'])
+)
+
+socket.on('high score', (data) ->
+  #draw(data['high score'])
 )
 
 # This has to be kept in sync with variables in Game

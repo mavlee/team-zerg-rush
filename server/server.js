@@ -8,38 +8,50 @@
 
   io = require('socket.io').listen(8080);
 
+  io.set('log level', 1);
+
+  io.set('transports', ['websocket', 'flashsocket', 'htmlfile', 'xhr-polling', 'jsonp-polling']);
+
   game = new Game();
 
   game.start_game();
 
   setInterval(function() {
-    if (game.get_player_count() > 0) {
-      return game.compute_state();
-    }
-  }, Game.UPDATE_INTERVAL);
-
-  setInterval(function() {
-    if (game.get_player_count() > 0) {
+    if (game.get_player_count() > 0 && game.is_game_on()) {
       return game.spawn_enemies();
     }
   }, Game.SPAWN_INTERVAL);
 
   io.sockets.on('connection', function(socket) {
     game.player_join();
+    socket.emit('player count', {
+      'players': game.get_player_count()
+    });
+    socket.emit('high score', {
+      'high score': game.get_high_score()
+    });
     console.log('player joined');
     setInterval(function() {
-      if (game.is_game_over()) {
-        return socket.emit('game over');
-      } else {
-        return socket.emit('game data', game.save());
+      if (game.get_player_count() > 0) {
+        game.compute_state();
+        if (game.is_game_over()) {
+          socket.emit('game over');
+          return socket.emit('high score', {
+            'high score': game.get_high_score()
+          });
+        } else {
+          return socket.emit('game data', game.save());
+        }
       }
     }, Game.UPDATE_INTERVAL);
     socket.on('disconnect', function(socket) {
       game.player_leave();
+      socket.emit('player count', {
+        'players': game.get_player_count()
+      });
       return console.log('player left');
     });
     return socket.on('player click', function(data) {
-      console.log(data);
       return game.register_click(data['x'], data['y']);
     });
   });

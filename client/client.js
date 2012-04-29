@@ -22,6 +22,10 @@
     return draw_game_over();
   });
 
+  socket.on('player count', function(data) {});
+
+  socket.on('high score', function(data) {});
+
   draw = function(blob_list) {
     var blob, _i, _len;
     canvas.clearRect(0, 0, BOARD_SIZE, BOARD_SIZE);
