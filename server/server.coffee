@@ -45,12 +45,14 @@ io.sockets.on('connection', (socket) ->
         socket.emit('high score', {'high score': game.get_high_score()})
       else
         socket.emit('game data', game.save())
+        socket.emit('mice', {'mice': mice})
   , Game.UPDATE_INTERVAL)
 
-  setInterval(() ->
-    if game.is_game_over() == false
-      socket.emit('mice', {'mice': mice})
-  , 250)
+  # Uncomment if mice data being sent too frequently
+  #setInterval(() ->
+  #  if game.is_game_over() == false
+  #    socket.emit('mice', {'mice': mice})
+  #, 250)
 
   socket.on('disconnect', (socket) ->
     game.player_leave()
@@ -64,6 +66,7 @@ io.sockets.on('connection', (socket) ->
   )
 
   socket.on('mouse pos', (data) ->
-    mice[data['id']] = [data['x'], data['y']]
+    if data['id'] != 0
+      mice[data['id']] = [data['x'], data['y']]
   )
 )

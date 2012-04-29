@@ -51,17 +51,13 @@
             'high score': game.get_high_score()
           });
         } else {
-          return socket.emit('game data', game.save());
+          socket.emit('game data', game.save());
+          return socket.emit('mice', {
+            'mice': mice
+          });
         }
       }
     }, Game.UPDATE_INTERVAL);
-    setInterval(function() {
-      if (game.is_game_over() === false) {
-        return socket.emit('mice', {
-          'mice': mice
-        });
-      }
-    }, 250);
     socket.on('disconnect', function(socket) {
       game.player_leave();
       io.sockets.emit('player count', {
@@ -74,7 +70,9 @@
       return game.register_click(data['x'], data['y']);
     });
     return socket.on('mouse pos', function(data) {
-      return mice[data['id']] = [data['x'], data['y']];
+      if (data['id'] !== 0) {
+        return mice[data['id']] = [data['x'], data['y']];
+      }
     });
   });
 
