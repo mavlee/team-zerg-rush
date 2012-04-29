@@ -60,9 +60,6 @@
 
     Game.prototype.spawn_enemies = function() {
       var blob_no, c, life, pos, side, size, speed, vx, vy, x, y, _i, _ref, _results;
-      if (this.game_on !== true) {
-        return;
-      }
       _results = [];
       for (blob_no = _i = 1, _ref = this.player_count * 2; 1 <= _ref ? _i <= _ref : _i >= _ref; blob_no = 1 <= _ref ? ++_i : --_i) {
         size = Math.floor(Math.random() * (50 - 10 + 1)) + 10;
@@ -116,7 +113,7 @@
 
     Game.prototype.compute_state = function() {
       var blob, x, _i, _len, _ref;
-      if (this.game_on !== true) {
+      if (this.is_game_over() === true) {
         return;
       }
       _ref = this.blob_list;
@@ -149,7 +146,6 @@
       var ctx;
       console.log('game_over');
       this.blob_list = [];
-      this.game_on = false;
       if (this.score > this.high_score) {
         this.high_score = this.score;
       }

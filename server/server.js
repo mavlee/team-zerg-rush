@@ -17,7 +17,7 @@
   game.start_game();
 
   setInterval(function() {
-    if (game.get_player_count() > 0 && game.is_game_on()) {
+    if (game.get_player_count() > 0 && game.is_game_over() === false) {
       return game.spawn_enemies();
     }
   }, Game.SPAWN_INTERVAL);
@@ -30,15 +30,21 @@
     socket.emit('high score', {
       'high score': game.get_high_score()
     });
+    if (game.is_game_over()) {
+      socket.emit('game over');
+    }
     console.log('player joined');
     setInterval(function() {
       if (game.get_player_count() > 0) {
         game.compute_state();
         if (game.is_game_over()) {
-          socket.emit('game over');
-          return socket.emit('high score', {
-            'high score': game.get_high_score()
-          });
+          if (game.is_game_on()) {
+            game.game_on = false;
+            socket.emit('game over');
+            return socket.emit('high score', {
+              'high score': game.get_high_score()
+            });
+          }
         } else {
           return socket.emit('game data', game.save());
         }

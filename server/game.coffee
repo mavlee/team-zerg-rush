@@ -38,8 +38,6 @@ class Game
 
   # Calibrated for SPAWN_INTERVAL
   spawn_enemies: () ->
-    if this.game_on != true
-      return
     # Create 2 blobs for every player
     for blob_no in [1..this.player_count * 2]
       # sizes from 10 to 50px
@@ -87,7 +85,7 @@ class Game
           return
 
   compute_state: () ->
-    if this.game_on != true
+    if this.is_game_over() == true
       return
     for blob in this.blob_list
       # Update positions
@@ -103,7 +101,6 @@ class Game
   game_over: () ->
     console.log('game_over')
     this.blob_list = []
-    this.game_on = false
     if this.score > this.high_score
       this.high_score = this.score
     ctx = this
