@@ -3,6 +3,12 @@ socket = io.connect('http://localhost:8080')
 canvasDom = document.getElementById('canvas')
 canvas = document.getElementById('canvas').getContext('2d')
 window.canvasDom = canvasDom
+client_id = 0
+mouse_x = 0
+mouse_y = 0
+mice = {}
+img = new Image()
+img.src = 'images/mouse.png'
 # Keep in sync with Game.BOARD_SIZE
 BOARD_SIZE = 680
 
@@ -29,14 +35,28 @@ socket.on('high score', (data) ->
   document.getElementById('high-score').innerHTML = data['high score']
 )
 
+socket.on('client id', (data) ->
+  client_id = data['id']
+)
+
+socket.on('mice', (data) ->
+  mice = data['mice']
+)
+
 # This has to be kept in sync with variables in Game
 draw = (blob_list) ->
+  # draw blobs
   canvas.clearRect(0, 0, BOARD_SIZE, BOARD_SIZE)
   for blob in blob_list
     canvas.fillStyle = colors[blob.life]
     canvas.fillRect(blob.x, blob.y, blob.size, blob.size)
 
+  # draw base
   canvas.strokeRect(BOARD_SIZE/2 - 25, BOARD_SIZE/2 - 25, 50, 50)
+
+  # draw mice
+  for id, pos of mice
+    canvas.drawImage(img, 0, 0, 12, 21, pos[0], pos[1], 12, 21) unless parseInt(id) == client_id
 
 draw_game_over = () ->
   canvas.fillStyle = "#000000"
@@ -44,10 +64,21 @@ draw_game_over = () ->
   canvas.clearRect(0, 0, BOARD_SIZE, BOARD_SIZE)
   canvas.fillText("GAME OVER", BOARD_SIZE/2-100, BOARD_SIZE/2-20)
 
+# Send click data
 canvasDom.onclick = (e) ->
   x = e.offsetX
   y = e.offsetY
   socket.emit('player click', {'x': x, 'y': y})
 
+# Clear annoying selection
 canvasDom.onmouseup = (e) ->
   window.getSelection().removeAllRanges()
+
+# Record mouse positioning
+canvasDom.onmousemove = (e) ->
+  mouse_x = e.offsetX
+  mouse_y = e.offsetY
+
+setInterval(() ->
+  socket.emit('mouse pos', {'id': client_id, 'x': mouse_x, 'y': mouse_y})
+, 250)
