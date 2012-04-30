@@ -43,6 +43,8 @@ setInterval(() ->
 
 io.sockets.on('connection', (socket) ->
   game.player_join()
+  if game.get_player_count() == 1
+    game.start_game()
 
   # Broadcast player count to all players
   io.sockets.emit('player count', {'players': game.get_player_count()})

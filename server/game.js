@@ -32,22 +32,15 @@
 
     Game.prototype.high_score = 0;
 
-    Game.prototype.game_on = false;
-
     function Game() {
       this.blob_list = [];
       this.base_life = Game.STARTING_BASE_LIFE;
     }
 
-    Game.prototype.is_game_on = function() {
-      return this.game_on;
-    };
-
     Game.prototype.start_game = function() {
       this.blob_list = [];
       this.base_life = Game.STARTING_BASE_LIFE;
       this.score = 0;
-      this.game_on = true;
       return console.log('game started');
     };
 
@@ -176,7 +169,9 @@
       }
       ctx = this;
       return setTimeout(function() {
-        return ctx.start_game();
+        if (ctx.blob_list.length === 0 && ctx.base_life === 0) {
+          return ctx.start_game();
+        }
       }, Game.GAME_RESTART_TIME);
     };
 

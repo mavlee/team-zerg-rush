@@ -15,20 +15,15 @@ class Game
   player_count: 0
   score: 0
   high_score: 0
-  game_on: false
 
   constructor: () ->
     this.blob_list = []
     this.base_life = Game.STARTING_BASE_LIFE
 
-  is_game_on: () ->
-    return this.game_on
-
   start_game: () ->
     this.blob_list = []
     this.base_life = Game.STARTING_BASE_LIFE
     this.score = 0
-    this.game_on = true
     console.log('game started')
 
   save: () ->
@@ -119,7 +114,8 @@ class Game
       this.high_score = this.score
     ctx = this
     setTimeout(() ->
-      ctx.start_game()
+      if ctx.blob_list.length == 0 and ctx.base_life == 0
+        ctx.start_game()
     , Game.GAME_RESTART_TIME)
 
   is_game_over: () ->

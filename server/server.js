@@ -45,6 +45,9 @@
 
   io.sockets.on('connection', function(socket) {
     game.player_join();
+    if (game.get_player_count() === 1) {
+      game.start_game();
+    }
     io.sockets.emit('player count', {
       'players': game.get_player_count()
     });
